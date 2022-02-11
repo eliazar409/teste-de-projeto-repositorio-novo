@@ -1,0 +1,41 @@
+#### 4.1 - Teste de Software
+
+Os testes de software são desenvolvidos pela equipe de programação e têm como objetivo verificar e validar o código desenvolvido para o jogo. Ou seja, se ele está correto e se efetivamente implementa o que foi especificado para cada funcionalidade.
+
+Testar um software é um processo que ocorre em diversas camadas: desde os componentes básicos que formam o programa (classes, funções) até os sistemas inteiros do jogo (jogabilidade principal, sistemas de IA, sistemas de renderização gráfica, sistemas de combate, etc.) e, por fim, o jogo como um todo. Esses podem ser realizados pelo próprio desenvolvedor das funcionalidades, mas é comum existir uma equipe de testes específica para avaliar o código produzido. Dessa forma, se tem olhares diferentes sobre uma mesma parte do jogo, o que facilita a detecção de erros ou equívocos do programador.
+
+Com relação à abordagem do teste, podemos classificá-los em dois tipos: testes de caixa preta e testes de caixa branca.
+
+**Testes de caixa preta** ou **comportamentais** são testes baseados na especificação da funcionalidade, e não na sua estrutura. Dessa forma, o testador executa vários cenários possíveis sem observar a forma como a funcionalidade foi codificada, e o caso de teste ocorre com a alimentação de diversos valores de entrada, os quais geram uma saída que é comparada com o resultado esperado a partir da especificação da função.
+
+Imagine um jogo de tabuleiro 2D, com uma perspectiva de câmera *top-down*, onde o personagem tem uma posição representada por dois valores (X, Y). Considere também que o canto inferior esquerdo representa a coordenada (0, 0) no tabuleiro e que seu tamanho máximo é de (512, 512). Logo, uma especificação para a função *mover_no_tabuleiro* do jogo poderia ser dada da seguinte forma:
+
+- Direcional para cima faz o valor do Y aumentar uma unidade por vez.
+- Direcional para baixo faz o valor de Y diminuir uma unidade por vez.
+- Direcional para a direita faz o valor de X aumentar uma unidade por vez.
+- Direcional para a esquerda faz o valor de X diminuir uma unidade por vez.
+- O personagem não pode sair dos limites do tabuleiro.
+
+Com essa especificação, nós podemos criar vários casos de teste sem precisar verificar como o código da função *mover_no_tabuleiro* foi construído! Basta fornecer uma sequência de movimentações, calcular a saída esperada e verificar se a função retornou o mesmo valor. Se o jogador está na posição (2, 3) e ele anda duas vezes para a direita e uma para cima, sua posição deve ser (4, 4). O problema é que testar todas as possibilidades é impossível, dado que o conjunto de combinações diferentes que podem ser executadas é praticamente infinito! Para isso, nós vamos precisar definir um conjunto de caso de testes que seja representativo o suficiente para cobrir as diversas possibilidades de cenários válidos e inválidos que poderiam ocorrer dessas simples regras de movimentação.
+
+Uma forma de realizar isso é através da criação de classes de equivalência, ou seja, cenários válidos e inválidos que nosso programa pode encontrar ao longo de sua execução. Considerando o exemplo da movimentação, uma classe válida seria uma movimentação para cima que aumenta apenas o valor do componente Y e não sai do tabuleiro. Se testarmos alguns casos com esse tipo de movimentação e eles operarem de forma correta, é provável então que ela funcione para todos as outras movimentações dessa mesma classe (movimentações para cima, dentro do tabuleiro).
+
+Já se considerarmos um caso limite (o personagem na borda de cima do tabuleiro), então teríamos uma classe inválida se o personagem se movimentasse além das bordas. Seguindo esse raciocínio, podemos construir um conjunto relativamente pequeno de casos de testes que cubram todos os tipos de movimentação existentes no tabuleiro sem ter de, necessariamente, testar todas as possibilidades de forma exaustiva!
+
+**Figura 13** - Exemplos de casos de teste para o tabuleiro usado como exemplo.
+
+![Exemplos de casos de teste para o tabuleiro usado como exemplo.](https://materiais.imd.ufrn.br/materialV2/assets/imagens/design-de-jogos-digitais/aula-09@design-de-jogos-digitais-13.jpg)
+
+**Testes de caixa branca** ou **estruturais** têm como objetivo avaliar a estrutura do código e verificar se todos os caminhos possíveis de execução do programa são testados e verificados. Através desse teste é possível encontrar partes de código “mortas” (nunca são atingidas pelo programa), o que pode indicar erros de implementação ou a necessidade de refatoração (reescrita, falado de forma chique) do código da funcionalidade para eliminar partes obsoletas. Um problema do teste de caixa branca é que, como o testador vê a estrutura do código, ele acaba sendo condicionado a escrever testes os quais se adequem àquela estrutura, não pensando em casos que possam verificar se aquele código cobre todas as possibilidades da especificação.
+
+Normalmente, os dois tipos de teste são aplicados em conjunto, já que possuem finalidades diferentes, mas com caráter complementar para validação de um programa ou componente do sistema.
+
+Outra classificação que podemos realizar com relação aos testes é em função do escopo no qual o teste é executado. Testes que são executados nos elementos mais básicos do sistema (como classes, componentes e funções) são chamados de testes unitários. Esses testes buscam validar cada unidade em relação às entradas e saídas definidas na interface do componente, e tem como objetivo garantir que cada unidade funciona corretamente.
+
+O teste unitário é feito apenas com o componente específico, para evitar que erros provenientes de outras partes do sistema possam se propagar e resultar em efeitos colaterais no componente testado (tipo efeito borboleta e teoria do caos, só que o tufão acontece no seu trabalho). Esse tipo de teste é utilizado no processo de desenvolvimento para garantir que, mesmo após mudanças no código do sistema, seus componentes ainda funcionem corretamente. Uma outra vantagem é que erros detectados estão relacionados diretamente ao componente testado, facilitando a sua localização e correção. Além disso, se o programador já pensa nos casos de teste que serão implementados, é mais provável que ele avalie bem a especificação da funcionalidade e entenda melhor o que deve fazer, reduzindo erros decorrentes de interpretação equivocada.
+
+Por fim, mas não menos importante, existem vários frameworks que automatizam os testes unitários! Dessa forma, o programador implementa o caso de teste como um programa e a tarefa maçante e repetitiva de executá-lo várias vezes fica a cargo do computador! Isso é interessante também do ponto de vista de manutenção de código: quando ocorrer uma mudança no sistema, basta colocar todos os casos de teste para rodarem novamente e verificar se as mudanças efetuadas geram algum erro no programa.
+
+Além dos testes unitários, existem mais dois tipos de testes que devem ser realizados para garantir o funcionamento de um software. Os **testes de integração** verificam se não há falhas operacionais dos componentes quando utilizados de forma conjunta. Embora cada componente possa ter passado por testes de forma individualizada, ainda podem ocorrer erros no momento da comunicação entre dois componentes diferentes, logo esse teste visa detectar erros na especificação da interface entre partes do programa. Em um último nível, o jogo será testado de forma completa, com um **teste de sistema**: da mesma forma que os componentes individuais são agrupados em módulos ou subsistemas para o teste de integração, esses módulos são agrupados e executados em conjunto para verificar o funcionamento do sistema como um todo. Esse tipo de teste serve para verificar funcionalidades e características de desempenho e usabilidade do jogo de modo geral.
+
+Um último tipo de teste comum em sistemas de software é o **teste de aceitação**, e refere-se a um aceno do usuário final, indicando que o sistema corresponde às suas expectativas. No entanto, jogos não são sistemas de softwares comuns, e os testes de aceitação costumam ser executados com vários grupos distintos, em momentos diferentes do ciclo de desenvolvimento. Esses são os chamados testes de jogabilidade, os quais veremos a seguir!
